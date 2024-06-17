@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #2C3E50, #34495E);
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      margin-bottom: 20px;
+      background-color: #2C3E50;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: center;
+      border-radius: 5px;
+    }
+
+    th {
+      background-color: #34495E;
+    }
+
+    input[type="number"] {
+      background-color: #F39C12;
+      font-weight: bold;
+      width: calc(100% - 16px);
+      padding: 4px;
+      text-align: center;
+      border: none;
+      border-radius: 5px;
+      margin: 0;
+      box-sizing: border-box;
+    }
+  </style>
+  <title>Tabla de Cálculo</title>
+</head>
+<body>
+
+  <h2 style="text-align: center; color: #ECF0F1;">Cálculo en base a lo que se quiere recibir</h2>
+  <table id="tablaRecibir">
+    <thead>
+      <tr>
+        <th>Monto a Depositar</th>
+        <th>IVA</th>
+        <th>Subtotal</th>
+        <th>Comisión (%)</th>
+        <th>Monto a Recibir</th>
+        <th>Monto de Comisión</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="montoDepositar"></td>
+        <td id="iva"></td>
+        <td id="subtotal"></td>
+        <td><input type="number" id="comision" oninput="calcularRecibir()" step="0.01"></td>
+        <td><input type="number" id="montoRecibir" oninput="calcularRecibir()" step="0.01"></td>
+        <td id="montoComision"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 style="text-align: center; color: #ECF0F1;">Cálculo en base a lo que se va a depositar</h2>
+  <table id="tablaDepositar">
+    <thead>
+      <tr>
+        <th>Monto a Depositar</th>
+        <th>IVA</th>
+        <th>Subtotal</th>
+        <th>Comisión (%)</th>
+        <th>Monto a Recibir</th>
+        <th>Monto de Comisión</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="number" id="montoDepositar2" oninput="calcularDepositar()" step="0.01"></td>
+        <td id="iva2"></td>
+        <td id="subtotal2"></td>
+        <td><input type="number" id="comision2" oninput="calcularDepositar()" step="0.01"></td>
+        <td id="montoRecibir2"></td>
+        <td id="montoComision2"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 style="text-align: center; color: #ECF0F1;">Cálculo en base a los subtotales</h2>
+  <table id="tablaCalcular">
+    <thead>
+      <tr>
+        <th>Monto a Depositar</th>
+        <th>IVA</th>
+        <th>Subtotal</th>
+        <th>Comisión (%)</th>
+        <th>Monto a Recibir</th>
+        <th>Monto de Comisión</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="montoDepositar3"></td>
+        <td id="iva3"></td>
+        <td><input type="number" id="subtotal3" oninput="calcularTabla3()" step="0.01"></td>
+        <td><input type="number" id="comision3" oninput="calcularTabla3()" step="0.01"></td>
+        <td id="montoRecibir3"></td>
+        <td id="montoComision3"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    function calcularRecibir() {
+      const montoRecibir = parseFloat(document.getElementById('montoRecibir').value);
+      const comision = (parseFloat(document.getElementById('comision').value))/100;
+      const montoDepositar = montoRecibir / (1 - comision); 
+      const subtotal = montoDepositar / 1.16;
+      const iva = montoDepositar - subtotal;
+      const montoComision = montoDepositar - montoRecibir;
+
+      document.getElementById('montoDepositar').innerText = `$${montoDepositar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('iva').innerText = `$${iva.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('subtotal').innerText = `$${subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('montoComision').innerText = `$${montoComision.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+    }
+
+    function calcularDepositar() {
+      const montoDepositar2 = parseFloat(document.getElementById('montoDepositar2').value);
+      const comision = (parseFloat(document.getElementById('comision2').value))/100;
+      const subtotal2 = montoDepositar2 / 1.16;
+      const iva2 = subtotal2 * 0.16;
+      const montoComision2 = montoDepositar2 * comision;
+      const montoRecibir2 = montoDepositar2 - montoComision2;
+
+      document.getElementById('montoRecibir2').innerText = `$${montoRecibir2.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('iva2').innerText = `$${iva2.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('subtotal2').innerText = `$${subtotal2.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('montoComision2').innerText = `$${montoComision2.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+    }
+
+    function calcularTabla3() {
+      const comision3 = (parseFloat(document.getElementById('comision3').value))/100;
+      const subtotal3 = parseFloat(document.getElementById('subtotal3').value)
+      const iva3 = subtotal3 * 0.16;
+      const montoDepositar3 = subtotal3 + iva3;
+      const montoComision3 = montoDepositar3 * comision3;
+      const montoRecibir3 = montoDepositar3 - montoComision3;
+
+      document.getElementById('montoDepositar3').innerText = `$${montoDepositar3.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('iva3').innerText = `$${iva3.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('montoRecibir3').innerText = `$${montoRecibir3.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      document.getElementById('montoComision3').innerText = `$${montoComision3.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+    }
+    function actualizarContadorVisitas() {
+      let contadorVisitas = localStorage.getItem('contadorVisitas') || 0;
+      contadorVisitas = parseInt(contadorVisitas) + 1;
+      localStorage.setItem('contadorVisitas', contadorVisitas);
+
+      // Mostrar el contador en algún lugar de la página
+      document.getElementById('contadorVisitas').innerText = contadorVisitas;
+    }
+
+    // Llamar a la función al cargar la página
+    window.onload = function() {
+      actualizarContadorVisitas();
+    };
+  </script>
+    <div style="text-align: center; color: #ECF0F1;">
+      <p>Contador de Visitas: <span id="contadorVisitas">0</span></p>
+    </div>
+</body>
+</html>
